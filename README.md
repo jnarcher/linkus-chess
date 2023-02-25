@@ -8,4 +8,4 @@ Current featurs:
 - Perft results
 
 
-**the perft-parser.py was used for debugging move generation comparing the stockfish perft output to mine.**
+***the perft-parser.py was used for debugging move generation comparing the stockfish perft output to mine.***
