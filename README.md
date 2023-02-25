@@ -2,7 +2,7 @@
 Chess engine written completely in rust using the u64 bitboard representation.
 
 
-Current featurs:
+Current features:
 
 - Accurate move generation
 - Perft results
