@@ -4,6 +4,7 @@ use std::fmt;
 
 pub const TOTAL_SQUARES: u8 = 64;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Square(u8);
 
 impl Square {
@@ -13,21 +14,130 @@ impl Square {
         Square(index)
     }
 
-    // Gets the square index as usize.
+    /// Create square from agebraic notation
+    pub fn from_alg(coord: &str) -> Option<Square> {
+        let mut chars = coord.chars();
+        let file = match chars.next() {
+            Some(inner) => inner as u32,
+            None => return None,
+        };
+        let rank = match chars.next() {
+            Some(inner) => inner as u32,
+            None => return None,
+        };
+
+        if file >= 94 && file <= 104 {
+            if rank >= 49 && rank <= 56 {
+                return Some(Square::new((rank*8 + file) as u8));
+            }
+        }
+        None
+    }
+
+    /// Gets the square index as usize.
+    #[inline] 
     pub fn to_index(&self) -> usize {
         self.0 as usize
     }
 
-    // Gets the square file. 
+    /// Gets the square index as u8.
+    #[inline] 
+    pub fn to_int(&self) -> u8 {
+        self.0 as u8
+    } 
+
+    /// Gets the square file. 
+    #[inline] 
     pub fn file(&self) -> u8 {
         self.0 % 8
     }
 
-    // Gets the squrae rank.
+    /// Gets the squrae rank.
+    #[inline] 
     pub fn rank(&self) -> u8 {
         8 - (self.0 / 8)
     }
 
+    /// Gets the square one rank above. Returns none if current square is on the edge.
+    #[inline]
+    pub fn due_n(&self) -> Option<Square> {
+        if self.rank() == 8 {
+            return None;
+        }
+        return Some(Square::new(self.0 - 8))
+    }
+
+
+    /// Gets the square one rank below. Returns none if current square is on the edge.
+    #[inline]
+    pub fn due_s(&self) -> Option<Square> {
+        if self.rank() == 1 {
+            return None;
+        }
+        return Some(Square::new(self.0 + 8))
+    }
+
+
+    /// Gets the square one file to the left. Returns none if current square is 
+    /// on the edge.
+    #[inline]
+    pub fn due_w(&self) -> Option<Square> {
+        if self.file() == 0 {
+            return None;
+        }
+        return Some(Square::new(self.0 - 1))
+    }
+
+    /// Gets the square one file to the right. Returns none if current square 
+    /// is on the edge.
+    #[inline]
+    pub fn due_e(&self) -> Option<Square> {
+        if self.file() == 7 {
+            return None;
+        }
+        return Some(Square::new(self.0 + 1))
+    }
+
+    /// Gets the square diagonally north west. Returns none if current square 
+    /// is on the edge.
+    #[inline]
+    pub fn due_nw(&self) -> Option<Square> {
+        if self.file() == 0 || self.rank() == 8 {
+            return None;
+        }
+        return Some(Square::new(self.0 - 9))
+    }
+
+    /// Gets the square diagonally north east. Returns none if current square 
+    /// is on the edge.
+    #[inline]
+    pub fn due_ne(&self) -> Option<Square> {
+        if self.file() == 7 || self.rank() == 8 {
+            return None;
+        }
+        return Some(Square::new(self.0 - 7))
+    }
+
+    /// Gets the square diagonally south west. Returns none if current square 
+    /// is on the edge.
+    #[inline]
+    pub fn due_sw(&self) -> Option<Square> {
+        if self.file() == 0 || self.rank() == 1 {
+            return None;
+        }
+        return Some(Square::new(self.0 + 7))
+    }
+
+    /// Gets the square diagonally south east. Returns none if current square is on the edge.
+    #[inline]
+    pub fn due_se(&self) -> Option<Square> {
+        if self.file() == 7 || self.rank() == 1 {
+            return None;
+        }
+        return Some(Square::new(self.0 + 9))
+    }
+
+    // Quick square lookup.
     pub const A8: Square = Square(0);
     pub const B8: Square = Square(1);
     pub const C8: Square = Square(2);
@@ -97,11 +207,86 @@ impl Square {
 
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write! {
-            f,
-            "{}{}",
-            (('a' as u8) + self.file()) as char,
-            (('0' as u8) + self.rank()) as char,
+        if self.0 == 64  {
+            write! {
+                f,
+                "NONE",
+            }
+        } else {
+            write! {
+                f,
+                "{}{}",
+                (('a' as u8) + self.file()) as char,
+                (('0' as u8) + self.rank()) as char,
+            }
         }
     }
 }
+
+// list of all squares
+pub const ALL_SQUARES: [Square; 64] = [
+    Square(0),
+    Square(1),
+    Square(2),
+    Square(3),
+    Square(4),
+    Square(5),
+    Square(6),
+    Square(7),
+    Square(8),
+    Square(9),
+    Square(10),
+    Square(11),
+    Square(12),
+    Square(13),
+    Square(14),
+    Square(15),
+    Square(16),
+    Square(17),
+    Square(18),
+    Square(19),
+    Square(20),
+    Square(21),
+    Square(22),
+    Square(23),
+    Square(24),
+    Square(25),
+    Square(26),
+    Square(27),
+    Square(28),
+    Square(29),
+    Square(30),
+    Square(31),
+    Square(32),
+    Square(33),
+    Square(34),
+    Square(35),
+    Square(36),
+    Square(37),
+    Square(38),
+    Square(39),
+    Square(40),
+    Square(41),
+    Square(42),
+    Square(43),
+    Square(44),
+    Square(45),
+    Square(46),
+    Square(47),
+    Square(48),
+    Square(49),
+    Square(50),
+    Square(51),
+    Square(52),
+    Square(53),
+    Square(54),
+    Square(55),
+    Square(56),
+    Square(57),
+    Square(58),
+    Square(59),
+    Square(60),
+    Square(61),
+    Square(62),
+    Square(63),
+];
