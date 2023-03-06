@@ -16,6 +16,8 @@ pub enum SpecialMove {
     PromotionCapture(Piece),
 }
 
+pub const NO_MOVE: Move = Move(6); // used only for placeholders
+
 /// Uses 16-bit move structre from
 /// https://www.chessprogramming.org/Encoding_Moves
 /// 
@@ -36,7 +38,7 @@ pub enum SpecialMove {
 ///    14	1	1	1	0	rook-promo capture
 ///    15	1	1	1	1	queen-promo capture
 
-#[derive(Copy, Clone)] 
+#[derive(Copy, Clone, PartialEq, Debug)] 
 pub struct Move(u16);
 
 impl Move {
@@ -121,9 +123,10 @@ impl fmt::Display for Move {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write! {
             f,
-            "{}{}",
+            "{}{}  {:?}",
             self.get_origin(),
             self.get_target(),
+            self.get_special(),
         }
     }
 }

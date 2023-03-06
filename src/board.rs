@@ -198,9 +198,19 @@ impl Board {
         Board::new(STARTPOS).unwrap()
     }
 
-    /// Get movelist.
+    /// Get move list.
     pub fn get_move_list(&self) -> MoveList {
         self.pseudo_moves.clone()
+    }
+
+    /// Get color to move.
+    pub fn get_to_move(&self) -> Color {
+        self.to_move
+    }
+
+    /// Get whether the king of the current to move color is in check.
+    pub fn is_in_check(&self) -> bool {
+        self.in_check
     }
 
     /// Get bitboard containing all pieces.
@@ -413,9 +423,9 @@ impl Board {
         self.bitboards[i].pop_bit_by_square(square);
     } 
 
-    /// Generate pesudo legal moves.
+    /// Generate pseudo legal moves.
     pub fn gen_moves(&mut self) {
-        // TODO: ignore all moves that dont block/capture checking pieces or move king.
+        // TODO: ignore all moves that don't block/capture checking pieces or move king.
         // reset move_list
         self.pseudo_moves = MoveList::empty();
 
@@ -1026,7 +1036,7 @@ impl Board {
                     let mut attacks = get_queen_rays(origin, all_pieces);
 
                     attacks ^= attacks & black_pieces;
-
+ 
                     loop {
                         let target = match attacks.get_lsb_square() {
                             Some(sq) => sq,
@@ -1073,7 +1083,7 @@ impl Board {
                 } else if i == 8 {
                     if target == Square::A8 {
                         self.castling_rights &= 0b1110;        
-                    } else if target == Square::H8 {
+                    } else if origin == Square::H8 {
                         self.castling_rights &= 0b1101;        
                     }
                 }
@@ -1155,7 +1165,7 @@ impl Board {
                 match self.to_move {
                     Color::WHITE => {
                         // remove pawn
-                        self.bitboards[5].pop_bit_by_square(target);
+                        self.bitboards[5].pop_bit_by_square(origin);
 
                         // add new piece
                         match piece {
@@ -1199,6 +1209,7 @@ impl Board {
             },
             SpecialMove::PromotionCapture(piece) => {
                 self.del_piece(target);
+                self.del_piece(origin);
                 match self.to_move {
                     Color::WHITE => {
                         // add new piece
@@ -1243,28 +1254,36 @@ impl Board {
         // if new en passant square not set, reset the field.
         if !new_en_passant {self.en_passant = Square::NO_SQUARE}
 
-        // Figure out which piece moved and move it.
-        let origin_index = self.get_bitboard_index_at_square(origin).unwrap();
-        self.bitboards[origin_index].move_bit_by_square(origin, target);
+        // Figure out which piece moved and move it only if its not a promotion.
+        match mv.get_special() {
+            SpecialMove::Promotion(_) =>{},
+            SpecialMove::PromotionCapture(_) => {},
+            _ => {
+                let origin_index = self.get_bitboard_index_at_square(origin)
+                    .unwrap();
+                self.bitboards[origin_index].move_bit_by_square(origin, target);
 
-        // update castling rights if king or rooks are moved
-        if origin_index == 2 { // whtie rooks
-            if origin == Square::A1 {
-                self.castling_rights &= 0b1011;        
-            } else if origin == Square::H1 { 
-                self.castling_rights &= 0b0111;        
+                // update castling rights if king or rooks are moved
+                if origin_index == 2 { // white rooks
+                    if origin == Square::A1 {
+                        self.castling_rights &= 0b1011;        
+                    } else if origin == Square::H1 { 
+                        self.castling_rights &= 0b0111;        
+                    }
+                } else if origin_index == 8 { // black rooks
+                    if origin == Square::A8 {
+                        self.castling_rights &= 0b1110;        
+                    } else if origin == Square::H8 {
+                        self.castling_rights &= 0b1101;        
+                    }
+                } else if origin_index == 0 { // white king
+                    self.castling_rights &= 0b0011;
+                } else if origin_index == 6 { // black king
+                    self.castling_rights &= 0b1100;
+                }
             }
-        } else if origin_index == 8 { // black rooks
-            if origin == Square::A8 {
-                self.castling_rights &= 0b1110;        
-            } else if origin == Square::H8 {
-                self.castling_rights &= 0b1101;        
-            }
-        } else if origin_index == 0 { // white king
-            self.castling_rights &= 0b0011;
-        } else if origin_index == 6 { // black king
-            self.castling_rights &= 0b1100;
         }
+
 
         match self.to_move {
             Color::WHITE => {
@@ -1329,7 +1348,11 @@ impl fmt::Display for Board {
         }
         display += "\n\n   a b c d e f g h";
 
-        display += &format!("\nto_move = {:?}\ncastling_rights = {:04b}\nen_passant = {}\n", self.to_move, self.castling_rights, self.en_passant);
+        display += &format!(
+            "\n\nto_move = {:?}\ncastling_rights = {:04b}\nen_passant = {}\n",
+            self.to_move,
+            self.castling_rights, 
+            self.en_passant);
         write! { f, "{}", display }
     }
 }

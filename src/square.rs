@@ -2,8 +2,6 @@
 
 use std::fmt;
 
-pub const TOTAL_SQUARES: u8 = 64;
-
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Square(u8);
 
@@ -26,9 +24,15 @@ impl Square {
             None => return None,
         };
 
-        if file >= 94 && file <= 104 {
-            if rank >= 49 && rank <= 56 {
-                return Some(Square::new((rank*8 + file) as u8));
+
+        let a = 'a' as u32;
+        let h = 'h' as u32;
+        let ascii_1 = '1' as u32;
+        let ascii_8 = '8' as u32;
+
+        if file >= a && file <= h {
+            if rank >= ascii_1 && rank <= ascii_8 {
+                return Some(Square::new(((7 - (rank - ascii_1))*8 + (file - a )) as u8));
             }
         }
         None
@@ -52,7 +56,7 @@ impl Square {
         self.0 % 8
     }
 
-    /// Gets the squrae rank.
+    /// Gets the square rank.
     #[inline] 
     pub fn rank(&self) -> u8 {
         8 - (self.0 / 8)
@@ -67,7 +71,6 @@ impl Square {
         return Some(Square::new(self.0 - 8))
     }
 
-
     /// Gets the square one rank below. Returns none if current square is on the edge.
     #[inline]
     pub fn due_s(&self) -> Option<Square> {
@@ -76,7 +79,6 @@ impl Square {
         }
         return Some(Square::new(self.0 + 8))
     }
-
 
     /// Gets the square one file to the left. Returns none if current square is 
     /// on the edge.

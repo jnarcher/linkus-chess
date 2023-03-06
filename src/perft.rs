@@ -2,7 +2,7 @@
 
 use crate::board::Board;
 
-fn perft_driver(board: &mut Board, depth: u8) -> u128 {
+pub fn perft_driver(board: &mut Board, depth: u8) -> u128 {
     let mut leafs = 0;
     if depth == 0 {
         return 1;
