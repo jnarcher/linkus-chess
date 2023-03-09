@@ -24,7 +24,6 @@ pub const STARTPOS: &str =
 #[derive(Debug)]
 pub enum FenParseError {
     InvalidPosition,
-    NumberOfFields,
     SideToMove,
     Castling,
     EnPassant,
@@ -49,11 +48,6 @@ impl Board {
 
     /// Creates a new board state from FEN string.
     pub fn new(fen: &str) -> Result<Board, FenParseError> {
-
-        // Check size of string
-        if fen.split_whitespace().count() != 6 {
-            return Err(FenParseError::NumberOfFields);
-        }
 
         // define empty bitboard set
         let mut bitboards: [Bitboard; 12] = [EMPTY; 12];
@@ -604,7 +598,7 @@ impl Board {
                     }
                 }
 
-                // kinside castling
+                // kingside castling
                 if self.castling_rights & 8 != 0 {
                     let between = Bitboard::from_square(Square::F1) |
                                   Bitboard::from_square(Square::G1);
@@ -918,7 +912,7 @@ impl Board {
                     }
                 }
 
-                // kinside castling
+                // kingside castling
                 if self.castling_rights & 2 != 0 {
                     let between = Bitboard::from_square(Square::F8) |
                                   Bitboard::from_square(Square::G8);

@@ -1,3 +1,14 @@
 {
-  "cSpell.words": ["bitboard", "bitboards", "negamax", "perft"]
+  "cSpell.words": [
+    "bestmove",
+    "bitboard",
+    "bitboards",
+    "isready",
+    "negamax",
+    "perft",
+    "readyok",
+    "startpos",
+    "ucinewgame",
+    "uciok"
+  ]
 }

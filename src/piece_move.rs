@@ -18,7 +18,7 @@ pub enum SpecialMove {
 
 pub const NO_MOVE: Move = Move(6); // used only for placeholders
 
-/// Uses 16-bit move structre from
+/// Uses 16-bit move structure from
 /// https://www.chessprogramming.org/Encoding_Moves
 /// 
 ///        111111   111111  origin -> target
@@ -123,10 +123,9 @@ impl fmt::Display for Move {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write! {
             f,
-            "{}{}  {:?}",
+            "{}{}",
             self.get_origin(),
             self.get_target(),
-            self.get_special(),
         }
     }
 }
