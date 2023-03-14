@@ -6,6 +6,5 @@ Current features:
 
 - Accurate move generation
 - Perft results
-
-
-*the perft-parser.py was used for debugging move generation comparing the stockfish perft output to mine.*
+- Negamax recursive search function with alpha-beta pruning.
+- Basic UCI protocol compatibility
