@@ -1156,6 +1156,7 @@ impl Board {
                 }
             },
             SpecialMove::Promotion(piece) => {
+                self.del_piece(origin);
                 match self.to_move {
                     Color::WHITE => {
                         // remove pawn
