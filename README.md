@@ -1,5 +1,5 @@
 # linkus-chess
-Chess engine written completely in rust using the u64 bitboard representation.
+Command line chess engine written completely in rust using the u64 bitboard representation.
 
 
 Current features:
