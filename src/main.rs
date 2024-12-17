@@ -1,10 +1,7 @@
 // main.rs
 
 use move_tables::gen_tables;
-use negamax::negamax;
 use parse::uci_loop;
-use board::Board;
-use piece_move::Move;
 
 pub mod board;
 pub mod negamax;

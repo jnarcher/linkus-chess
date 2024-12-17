@@ -186,7 +186,6 @@ fn parse_position(input: &str) -> Option<Board> {
 
     
     let mut chars: Vec<char> = input
-        .clone()
         .chars()
         .collect();
 
@@ -245,7 +244,7 @@ fn parse_position(input: &str) -> Option<Board> {
     match new_s.split_whitespace().find(|&x| x == "moves") {
         Some(_) => {
 
-            // skip "move"
+            // skip "moves"
             chars = chars[6..].to_vec();
 
             // get list of move strings
@@ -267,7 +266,6 @@ fn parse_position(input: &str) -> Option<Board> {
 fn parse_go(board: &mut Board, input: &str) {
 
     let mut chars: Vec<char> = input
-        .clone()
         .chars()
         .collect();
 
